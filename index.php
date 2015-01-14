@@ -4,8 +4,8 @@
 	include "PHP-Snippets/get_url_directory.php"; //https://github.com/Kakadua/PHP-Snippets
 ?>
 <?php
-	$phone_number = '0720537613';
-	$password = 'seduter';
+	$phone_number = '';
+	$password = '';
 	$group_id = urldecode($_GET['grp']);
 	$message = urldecode($_GET['msg']);   
 	if($group_id != '' && $message != ''){
