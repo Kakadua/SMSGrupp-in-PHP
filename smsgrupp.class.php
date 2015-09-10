@@ -1,11 +1,27 @@
 <?php
-	//SMSGrupp in PHP
-	//Created by Popeen.com	
+	/**
+	 * Class for interacting with the Swedish sms service Supertext, previously known as SMSGrupp
+	 *
+	 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+	 *
+	 * @license https://github.com/Kakadua/SMSGrupp-in-PHP/blob/master/LICENSE Creative Commons Attribution 4.0 International Public License
+	 *
+	 * @link https://github.com/Kakadua/SMSGrupp-in-PHP/tree/master
+	 *
+	 * @package SMSGrupp-in-PHP
+	 *
+	 */
+	 
 	class smsgrupp {
 		var $phone_number;
 		var $ch;
 		var $source;
 		
+		/**
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @version 1
+		 */		
 		function __construct($phone_number, $password) {
 			//Login url
 			$loginUrl     = 'https://www.smsgrupp.se/';
@@ -41,35 +57,74 @@
 			$this->source = curl_exec($this->ch);
 		}
 		
+		/**
+		 * Send a textmessage to a group
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $msg The message you want to send
+		 * @param string $group The id of the group you want to send to
+		 *
+		 * @version 1.1
+		 */
 		function send_to_group($msg, $group){
 			curl_setopt($this->ch, CURLOPT_URL, 'https://api.getsupertext.com/v1/conversations/'.$group.'/messages');
 			curl_setopt($this->ch, CURLOPT_POSTFIELDS, 'message='.$msg.'&send_to_self=1');
 			//Emulate header sent by browser
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
-				'Origin: https://www.smsgrupp.se',
-				"Accept-Encoding: gzip,deflate,lzma,sdch",
-				"Accept-Language: sv-SE,sv;q=0.8,en-US;q=0.6,en;q=0.4",
-				'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.132 Safari/537.36 OPR/21.0.1432.57',
-				"Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
 				"Accept: application/json, text/javascript, */*; q=0.01",
-				'Referer:  https://www.smsgrupp.se/grupp/sapp/'.$group,
-				"Connection: keep-alive",
-				"Message-Count: 1",
+				"Accept-Encoding: gzip, deflate",
+				"Accept-Language: en-US,en;q=0.8",
 				"Auth-Token: ".$this->get_between($this->source, 'Auth-Token", "', '"'),
-				"Before: 62299612"  //TODO, Get this number to auto update
+				"Before: 71480837",  //TODO, Get this number to auto update
+				"Client-Token: ".$this->get_between($this->source, 'Client-Token", "', '"'),
+				"Client-Version: 1",
+				"Connection: keep-alive",
+				"Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+				"Host: api.getsupertext.com",
+				"Message-Count: 1",
+				'Origin: https://www.smsgrupp.se',
+				'Referer:  https://www.smsgrupp.se/grupp/sapp/'.$group,
+				'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.132 Safari/537.36 OPR/21.0.1432.57'
 			));
 			curl_setopt($this->ch, CURLOPT_POST, 1);
 			curl_exec($this->ch);
 		}
 		
+		/**
+		 * Sign out
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @version 1
+		 */
 		function sign_out(){
 			curl_setopt($this->ch, CURLOPT_URL, 'http://smsgrupp.se/logout');
 			$out = curl_exec($this->ch);
 		}
-	
-	
-	
-		//Helpers
+		
+		/**
+		 * Gets a substring between two other substrings. 
+		 * 
+		 * OBS, this function only gives you the first match, 
+		 * if you want all of them use  get_between_all instead
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @license https://raw.githubusercontent.com/Kakadua/PHP-Snippets/master/LICENSE Unlicense
+		 *
+		 * @link https://github.com/Kakadua/PHP-Snippets/
+		 *
+		 * @package Kakadua-PHP-Snippets
+		 *
+		 * @param String $content The full string you want to check
+		 * @param String $before The substring before the string you want
+		 * @param String $after The substring after the string you want
+		 *
+		 * @return String The function returns the read data or FALSE on failure. 
+		 *
+		 *	@version 1
+		 */
 		function get_between($content,$start,$end){
 			$r = explode($start, $content);
 			if (isset($r[1])){
@@ -78,6 +133,6 @@
 			}
 			return '';
 		}
-	}
 		
+	}
 ?>
