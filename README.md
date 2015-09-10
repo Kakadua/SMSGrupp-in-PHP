@@ -20,4 +20,4 @@ In this example I grab a conversation called Beer and send a message to it
 	
 	$smsgrupp = new smsgrupp();
 	$conv_named_beer = $smsgrupp -> get_conversations_by_name('Testar')[0]; //The function returns an array with all your conversations named Beer, for this example we just take the first one
-	$smsgrupp-> send_to_conversation($message, $conv_named_beer['conversation']['id']); //Send a message, give it the id of the group you want to send to
+	$smsgrupp-> send_to_conversation($message, $conv_named_beer['conversation']['id']); //Send a message, give it the id of the conversation you want to send to

@@ -92,7 +92,7 @@
 <?php		
 
 	} else if(isset($_POST['pin'])){
-		echo confirm_pin($_POST['number'], $_POST['pin']) 
+		echo confirm_pin($_POST['number'], $_POST['pin']); 
 		$json['phone_nr'] = $_POST['number'];
 		$json['Auth-Token'] = $temp['token'];
 		
