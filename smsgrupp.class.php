@@ -23,9 +23,7 @@
 		 * @version 1
 		 */		
 		function __construct($phone_number, $password) {
-			//Login url
 			$loginUrl     = 'https://www.smsgrupp.se/';
-			//Cookie file
 			$cookie  = dirname(__FILE__) . '\cookie.txt';
 			unlink($cookie);
 			
@@ -38,20 +36,17 @@
 			curl_setopt($this->ch, CURLOPT_HEADER, false); 
 			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
 					
-			//define post fields
 			$postfields = array(
 				"number" => $phone_number,
 				"password" => $password,
 				"rememberme:" => ''
 			);
 
-			//Create string from the array
 			$p = "";
 			foreach($postfields as $k=>$v) {
 				$p .= $k.'='.$v.'&';
 			}
 
-			//sign in
 			curl_setopt($this->ch, CURLOPT_POST, 1);
 			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $p);
 			$this->source = curl_exec($this->ch);
@@ -65,12 +60,11 @@
 		 * @param string $msg The message you want to send
 		 * @param string $group The id of the group you want to send to
 		 *
-		 * @version 1.1
+		 * @version 1.2
 		 */
 		function send_to_group($msg, $group){
 			curl_setopt($this->ch, CURLOPT_URL, 'https://api.getsupertext.com/v1/conversations/'.$group.'/messages');
 			curl_setopt($this->ch, CURLOPT_POSTFIELDS, 'message='.$msg.'&send_to_self=1');
-			//Emulate header sent by browser
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
 				"Accept: application/json, text/javascript, */*; q=0.01",
 				"Accept-Encoding: gzip, deflate",
@@ -125,13 +119,14 @@
 		 *
 		 *	@version 1
 		 */
-		function get_between($content,$start,$end){
-			$r = explode($start, $content);
-			if (isset($r[1])){
-				$r = explode($end, $r[1]);
-				return $r[0];
+		function get_between($content, $before, $after){
+			$temp = explode($before, $content);
+			if (isset($temp[1])){
+				$temp = explode($after, $temp[1]);
+				return $temp[0];
+			} else{
+				return '';
 			}
-			return '';
 		}
 		
 	}
