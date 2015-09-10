@@ -1,21 +1,23 @@
-SMSGrupp in PHP
+Supertext in PHP
 ================
-This is a class that lets you interct with your SMSGrupp account.
-Please note that SMSGrupp is only availiable for Swedish operators by the time I am writing this.
+This is a class that lets you interact with your account at Supertext, previously known as SMSGrupp.
+OBS, you are currently in the BETA branch, things might not always work and will probably change. 
+During development I use Kint (http://raveren.github.io/kint/) and PHP Snippets (https://github.com/Kakadua/PHP-Snippets) so you will probably need those too.
 
-To get the ID of the group you want to send the messages to all you have to do is sign in to smsgrupp.se and go to the group. The ID will then show in the address bar of your browser.
+
+Setup:
+================
+Put the files on a server that can run php files, then you need to generate a config file for your account. Do this by visiting http://{YOUR SITE}/generate_config.php and follow the instructions. Make sure generate_config has permission to create and write to files.
+Once the config file is generated make sure to delete generate_config.php so no one else can generate a new file.
+Now you are done, easy huh
 
 
 Example:
 ================
-The url of the group I want to send to is http://smsgrupp.se/grupp/sapp/123456
-That means that the groups ID is 123456. I can then use this code to send a message to this group
-
-	$phone_number = '0123456789';
-	$password = 'myAwsomePassword';
-	$group_id = '123456';
-	$message = 'This is the message I want to send';	
+In this example I grab a conversation called Beer and send a message to it
 	
-	$smsgrupp = new smsgrupp($phone_number, $password); //Create a sms grupp object, give it your phone number and password so it can sign in.
-	$smsgrupp-> send_to_group($message, $group_id); //Send a message, give it the id of the group you want to send to
-	$smsgrupp-> sign_out(); //Sign out
+	$message = "This class is free as in both beer and speech!";
+	
+	$smsgrupp = new smsgrupp();
+	$conv_named_beer = $smsgrupp -> get_conversations_by_name('Testar')[0]; //The function returns an array with all your conversations named Beer, for this example we just take the first one
+	$smsgrupp-> send_to_conversation($message, $conv_named_beer['conversation']['id']); //Send a message, give it the id of the group you want to send to
