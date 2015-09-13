@@ -49,6 +49,46 @@
 			));
 		}
 		
+		
+		/**
+		 * Reorganizes conversations array to get rid of unnecesery depth
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $conv The conversation that is to be organized
+		 *
+		 * @version 1
+		 */
+		private function reorganize_conversations_array($conv){
+			$return = array();
+			foreach($conv['conversations'] as $conversation){
+				for($i=0; $i<count($conversation['conversation']['users']); $i++){
+					$conversation['conversation']['users'][$i] = $conversation['conversation']['users'][$i]['user'];
+				}
+				array_push($return, $conversation['conversation']);
+			}
+			
+			return $return;
+		}
+		/**
+		 * Reorganizes conversation array to get rid of unnecesery depth
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $conv The conversation that is to be organized
+		 *
+		 * @version 1
+		 */
+		private function reorganize_conversation_array($conv){
+			$return = array();
+			for($i=0; $i<count($conv['conversation']['users']); $i++){
+				$conv['conversation']['users'][$i] = $conv['conversation']['users'][$i]['user'];
+			}
+			array_push($return, $conv['conversation']);
+						
+			return $return;
+		}
+		
 		/**
 		 * Get all conversations
 		 *
@@ -62,7 +102,8 @@
 		function get_conversations(){
 			curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
 			curl_setopt($this->ch, CURLOPT_URL, 'https://api.getsupertext.com/v2/conversations');
-			return json_decode(curl_exec($this->ch), true)['conversations'];
+			$return = array();
+			return $this->reorganize_conversations_array(json_decode(curl_exec($this->ch), true));
 		}
 		
 		/**
@@ -77,7 +118,7 @@
 		function get_conversation_by_id($id){
 			curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
 			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v2/conversations/{$id}");
-			return json_decode(curl_exec($this->ch), true);
+			return $this->reorganize_conversation_array(json_decode(curl_exec($this->ch), true))[0];
 		}
 		
 		/**
@@ -93,7 +134,7 @@
 			$all_conv = $this->get_conversations();
 			$found_conv = array();
 			foreach($all_conv as $conv){
-				if($conv['conversation']['name'] == $name){
+				if($conv['name'] == $name){
 					array_push($found_conv, $conv);
 				}
 			}
@@ -113,7 +154,7 @@
 			$all_conv = $this->get_conversations();
 			$found_conv = array();
 			foreach($all_conv as $conv){
-				if(in_array($conv['conversation']['name'], $names)){
+				if(in_array($conv['name'], $names)){
 					array_push($found_conv, $conv);
 				}
 			}
@@ -130,7 +171,41 @@
 		function get_profile(){
 			curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
 			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v1/me");
-			return json_decode(curl_exec($this->ch), true);
+			return json_decode(curl_exec($this->ch), true)['account'];
+		}
+		
+		/**
+		 * Get user from a conversation by name
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @version 1
+		 */
+		function get_users_by_name($name, $conv_id){
+			$conv = $this->get_conversation_by_id($conv_id);
+			$return = array();
+			foreach($conv['users'] as $user){
+				if($name == $user['nickname']){
+					array_push($return, $user);
+				}
+			}
+			return $return;
+		}
+		/**
+		 * Get user from a conversation by id
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @version 1
+		 */
+		function get_user_by_id($user_id, $conv_id){
+			$conv = $this->get_conversation_by_id($conv_id);
+			foreach($conv['users'] as $user){
+				if($user_id == $user['user_id']){
+					return $user;
+					break;
+				}
+			}
 		}
 		
 		/**
@@ -237,7 +312,7 @@
 		
 		/**
 		 * Gets a substring between two other substrings. 
-		 * 
+		 * a
 		 * OBS, this function only gives you the first match, 
 		 * if you want all of them use  get_between_all instead
 		 *

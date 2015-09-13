@@ -81,7 +81,7 @@
 	
 	if(isset($_POST['number']) && !isset($_POST['pin'])){
 		
-		echo request_pin($_POST['number']);
+		request_pin($_POST['number']);
 ?>
 		<form method="POST" action="generate_config.php">
 			Enter pin: <input type="number" name="pin"/>
@@ -92,9 +92,10 @@
 <?php		
 
 	} else if(isset($_POST['pin'])){
-		echo confirm_pin($_POST['number'], $_POST['pin']); 
+		$temp = json_decode(confirm_pin($_POST['number'], $_POST['pin']),true); 
 		$json['phone_nr'] = $_POST['number'];
 		$json['Auth-Token'] = $temp['token'];
+		$json['generated'] = time();
 		
 		file_write('config.cfg', json_encode($json));
 
@@ -104,9 +105,9 @@
 	} else{
 		
 ?>
-
+		Enter the phonenumber you want to use
 		<form method="POST" action="generate_config.php">
-			Enter your phonenumber: <input type="text" name="number" value="+46" />
+			<input type="text" name="number" value="+46" />
 			<input type="submit" value="Request pin" />
 		</form>
 
