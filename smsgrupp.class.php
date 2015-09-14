@@ -14,6 +14,7 @@
 	 
 	class smsgrupp {
 		var $config;
+		var $default_header;
 		
 		/**
 		 *
@@ -27,12 +28,7 @@
 		function __construct($backcomp = '', $backcomp2 = '') {
 			
 			$this->config = json_decode($this->file_read('config.cfg'),true);
-			$this->ch = curl_init();
-			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($this->ch, CURLOPT_HEADER, false); 
-			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
-			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
+			$this->default_header = array(
 				"Auth-Token: {$this->config['Auth-Token']}",
 				'X-Features: 7',
 				'Client-Token: android',
@@ -44,7 +40,14 @@
 				"Connection: Keep-Alive",
 				"Accept-Encoding: gzip",
 				'User-Agent: okhttp/2.3.0'
-			));
+			);
+			
+			$this->ch = curl_init();
+			curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($this->ch, CURLOPT_HEADER, false); 
+			curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->default_header);
 		}
 		
 		
@@ -92,6 +95,22 @@
 		}
 		
 		/**
+		 * Get messages from conversation
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $conv_id The id of the conversation you want to get the messages from
+		 * @param string $num How many messages you want to get
+		 *
+		 *@return array An array containing the messages
+		 *
+		 * @version 1
+		 */
+		function get_messages($conv_id, $num){
+			return $this->get_conversation_by_id($conv_id, $num)['messages'];
+		}
+		
+		/**
 		 * Get all conversations
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
@@ -106,7 +125,6 @@
 		function get_conversations(){
 			curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
 			curl_setopt($this->ch, CURLOPT_URL, 'https://api.getsupertext.com/v2/conversations');
-			$return = array();
 			return $this->reorganize_conversations_array(json_decode(curl_exec($this->ch), true));
 		}
 		
@@ -179,15 +197,19 @@
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
 		 *
 		 * @param string $id The id of the conversation you want to get
+		 * @param string $num_msg OPTIONAL, the number of messges you want to get. If not set it defaults to just the latest message.
 		 *
 		 *@return array The conversation with the id you asked for
 		 *
-		 * @version 1
+		 * @version 1.1
 		 */
-		function get_conversation_by_id($id){
+		function get_conversation_by_id($id, $num_msg = 1){
 			curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
 			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v2/conversations/{$id}");
-			return $this->reorganize_conversation_array(json_decode(curl_exec($this->ch), true))[0];
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, array_merge($this->default_header, array("Message-Count: {$num_msg}")));
+			$return = $this->reorganize_conversation_array(json_decode(curl_exec($this->ch), true))[0];
+			curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->default_header);
+			return $return;
 		}
 		
 		/**

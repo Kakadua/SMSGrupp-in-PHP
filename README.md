@@ -4,12 +4,14 @@ This is a class that lets you interact with your account at Supertext, previousl
 OBS, you are currently in the BETA branch, things might not always work and will probably change. 
 During development I use Kint (http://raveren.github.io/kint/) and PHP Snippets (https://github.com/Kakadua/PHP-Snippets) so you will probably need those too.
 
+Documentation for the BETA that are always somewhat up to date can be found at http://popeen.com/dev/tools/SMSGrupp-in-PHP/docs/
 
 Setup:
 ================
 Put the files on a server that can run php files, then you need to generate a config file for your account. Do this by visiting http://{YOUR SITE}/generate_config.php and follow the instructions. Make sure generate_config has permission to create and write to files.
 Once the config file is generated make sure to delete generate_config.php so no one else can generate a new file.
-**VERY IMPORTANT:** Make sure that you deny access to config.cfg in htaccess so that no one can get access to it, should they manage to do that they can use it to get full access to your account
+
+**VERY IMPORTANT:** Make sure that you deny access to config.cfg in htaccess so that no one can get access to it, should they manage to do that they can use it to get full access to your account. In the default .htaccess that comes with this class this has already been done.
 
 
 Example:
