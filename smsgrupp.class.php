@@ -107,6 +107,69 @@
 		}
 		
 		/**
+		 * Create a conversation with one person
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $name The name you want to give the other person
+		 * @param string $number The phone number of the other person
+		 *
+		 *@return Returns the conversation you just created
+		 *
+		 * @version 1
+		 */
+		function create_conversation($name, $number){
+			curl_setopt($this->ch, CURLOPT_POST, 1);
+			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v1/conversations");	
+			$postfields = array(
+				"member[0][name]" => $name,
+				"Client-Token" => 'android',
+				"member[0][value]" => $number,
+				'Client-Version' => '299',
+				'member[0][type]' => 'phone_nr'
+			);
+			$p = "";
+			foreach($postfields as $k=>$v) {
+				$p .= $k.'='.$v.'&';
+			}
+			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $p);			
+			return $this->reorganize_conversation_array(json_decode(curl_exec($this->ch), true));
+		}
+
+		/**
+		 * Create a group conversation
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $members An array with all the members of the group. Should look like this: array(name1=>phonenumber1, name2=>phonenumber2)
+		 *
+		 *@return Returns the conversation you just created
+		 *
+		 * @version 1
+		 */
+		function create_group_conversation($members){
+			curl_setopt($this->ch, CURLOPT_POST, 1);
+			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v1/conversations");	
+			$postfields = array(
+				"Client-Token" => 'android',
+				'Client-Version' => '299'
+			);
+			$i=0;
+			foreach($members as $name => $number){
+				$postfields["member[{$i}][name]"] = $name;
+				$postfields["member[{$i}][value]"] = $number;
+				$postfields["member[{$i}][type]"] = 'phone_nr';
+				$i++;
+			}
+			$p = "";
+			foreach($postfields as $k=>$v) {
+				$p .= $k.'='.$v.'&';
+			}
+			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $p);			
+			return $this->reorganize_conversation_array(json_decode(curl_exec($this->ch), true));
+		}
+				
+		/**
 		 * Get conversation by id
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
