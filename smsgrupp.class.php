@@ -252,6 +252,36 @@
 		}
 		
 		/**
+		 * Update your Supertext profile
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $name Your name
+		 * @param string $email Your email
+		 * @param string $image_id OPTIONAL, the id of the image you want to use. If not passed in the image will stay the same
+		 *
+		 * @version 1
+		 */
+		function update_profile($name, $email, $image_id = false){
+			curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "PUT");
+			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v1/me");
+			if(!$image_id){ $image_id = $this->get_profile()['image']['id']; }
+			$postfields = array(
+				"Client-Token" => 'android',
+				'Client-Version' => '299',
+				'nickname' => $name,
+				'email' => $email,
+				'image_id' => $image
+			);
+			$p = "";
+			foreach($postfields as $k=>$v) {
+				$p .= $k.'='.$v.'&';
+			}
+			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $p);
+			curl_exec($this->ch);
+		}
+		
+		/**
 		 * Get user from a conversation by name
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
