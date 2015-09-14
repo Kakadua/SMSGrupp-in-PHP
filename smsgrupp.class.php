@@ -252,6 +252,48 @@
 		}
 		
 		/**
+		 * Update conversation settings
+		 *
+		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 * @param string $conv_id The id of the conversation you want to update
+		 * @param string $name The name you want for the conversation
+		 * @param string $notifications Who do you want to send notofications to. admin= administrator, all = all members
+		 * @param string $reply Who should the replies be sent to. admin= administrator, all = all members
+		 * @param string $invite Who should be able to invite new users. admin= administrator, all = all members
+		 * @param boolean $show_numbers Should the phonenumbers be shown in the messages
+		 * @param string $image_id OPTIONAL, the id of the image you want to use. If not passed in the image will stay the same
+		 *
+		 * @version 1
+		 */
+		function update_conversation($conv_id, $name, $notifications, $reply, $invite, $show_numbers, $image_id = false){
+			if(!$image_id){ $image_id = $this->get_conversation_by_id($conv_id)['image']['id']; }
+			if($notifications == 'admin'){ $notifications = '0'; }else{ $notifications = '1'; }
+			if($reply== 'admin'){ $reply = '1'; }else{ $reply = '0'; }
+			if($invite== 'admin'){ $reply = '0'; }else{ $reply = '1'; }
+			if($show_numbers){ $show_numbers = '1'; } else{ $show_numbers = 0; }
+			curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "PUT");
+			curl_setopt($this->ch, CURLOPT_URL, "https://api.getsupertext.com/v1/conversations/{$conv_id}");
+			if(!$image_id){ $image_id = $this->get_profile()['image']['id']; }
+			$postfields = array(
+				"Client-Token" => 'android',
+				'Client-Version' => '299',
+				'settings[user_notifications_to_all]' => $notifications,
+				'name' => $name,
+				'settings[reply_to]' => $reply,
+				'settings[show_number_to_all]' => $show_numbers,
+				'image_id' => $image_id,
+				'settings[all_invite]' => $invite
+			);
+			$p = "";
+			foreach($postfields as $k=>$v) {
+				$p .= $k.'='.$v.'&';
+			}
+			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $p);
+			curl_exec($this->ch);
+		}	
+		
+		/**
 		 * Update your Supertext profile
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
