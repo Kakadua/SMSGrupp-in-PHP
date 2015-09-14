@@ -57,6 +57,8 @@
 		 *
 		 * @param string $conv The conversation that is to be organized
 		 *
+		 *@return array A reorganized array
+		 *
 		 * @version 1
 		 */
 		private function reorganize_conversations_array($conv){
@@ -76,6 +78,8 @@
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
 		 *
 		 * @param string $conv The conversation that is to be organized
+		 *
+		 *@return array A reorganized array
 		 *
 		 * @version 1
 		 */
@@ -97,6 +101,8 @@
 		 * @param string $msg The message you want to send
 		 * @param string $group The id of the group you want to send to
 		 *
+		 *@return array An array containing all conversations
+		 *
 		 * @version 1
 		 */
 		function get_conversations(){
@@ -114,7 +120,7 @@
 		 * @param string $name The name you want to give the other person
 		 * @param string $number The phone number of the other person
 		 *
-		 *@return Returns the conversation you just created
+		 *@return array Returns the conversation you just created
 		 *
 		 * @version 1
 		 */
@@ -143,7 +149,7 @@
 		 *
 		 * @param string $members An array with all the members of the group. Should look like this: array(name1=>phonenumber1, name2=>phonenumber2)
 		 *
-		 *@return Returns the conversation you just created
+		 *@return array Returns the conversation you just created
 		 *
 		 * @version 1
 		 */
@@ -176,6 +182,8 @@
 		 *
 		 * @param string $id The id of the conversation you want to get
 		 *
+		 *@return array The conversation with the id you asked for
+		 *
 		 * @version 1
 		 */
 		function get_conversation_by_id($id){
@@ -190,6 +198,8 @@
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
 		 *
 		 * @param string $name The name of the conversations you want to get
+		 *
+		 *@return array An array containing all conversations where the name is the one you asked for
 		 *
 		 * @version 1
 		 */
@@ -209,7 +219,9 @@
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
 		 *
-		 * @param array $names The an array containing the names you want to look for
+		 * @param array $names The an array containing the names you want to look for, ex array('free', 'beer', 'speech')
+		 *
+		 *@return array An array containing all conversations where the name is any of the ones you asked for
 		 *
 		 * @version 1
 		 */
@@ -229,6 +241,8 @@
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
 		 *
+		 *@return array The profile of the account you are using
+		 *
 		 * @version 1
 		 */
 		function get_profile(){
@@ -241,6 +255,8 @@
 		 * Get user from a conversation by name
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 *@return array An array containing all users with the specified name that are in the conversation
 		 *
 		 * @version 1
 		 */
@@ -258,6 +274,8 @@
 		 * Get user from a conversation by id
 		 *
 		 * @author Patrik "Popeen" Johansson <patrik@ptjwebben.se>
+		 *
+		 *@return array The user with the id you specified
 		 *
 		 * @version 1
 		 */
@@ -279,6 +297,8 @@
 		 * @param string $msg The message you want to send
 		 * @param string $conv_id The id of the conversation you want to send to
 		 * @param string $attach Any attachment you may want to include, this is optional 
+		 *
+		 *@return array success/error message
 		 *
 		 * @version 1
 		 */
@@ -310,6 +330,8 @@
 		 *
 		 * @param string $msg The message you want to send
 		 * @param string $group The id of the group you want to send to
+		 *
+		 *@return array success/error message
 		 *
 		 * @version 2
 		 */
