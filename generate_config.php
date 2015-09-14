@@ -1,6 +1,6 @@
 <?php
 
-	require_once 'kint-0.9/Kint.class.php';
+	require_once 'kint-1.0.6/Kint.class.php';
 	
 	function curl_post_request($url, $post, $header){		
 		$ch = curl_init();

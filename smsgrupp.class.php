@@ -1,6 +1,4 @@
-<?php
-	require_once 'kint-0.9/Kint.class.php';
-	
+<?php	
 	/**
 	 * Class for interacting with the Swedish sms service Supertext, previously known as SMSGrupp
 	 *
