@@ -9,7 +9,7 @@ Setup:
 ================
 Put the files on a server that can run php files, then you need to generate a config file for your account. Do this by visiting http://{YOUR SITE}/generate_config.php and follow the instructions. Make sure generate_config has permission to create and write to files.
 Once the config file is generated make sure to delete generate_config.php so no one else can generate a new file.
-Now you are done, easy huh
+**VERY IMPORTANT:** Make sure that you deny access to config.cfg in htaccess so that no one can get access to it, should they manage to do that they can use it to get full access to your account
 
 
 Example:
